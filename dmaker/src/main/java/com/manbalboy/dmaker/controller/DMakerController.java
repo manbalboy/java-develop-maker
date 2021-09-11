@@ -2,15 +2,13 @@ package com.manbalboy.dmaker.controller;
 
 
 import com.manbalboy.dmaker.dto.CreateDeveloper;
+import com.manbalboy.dmaker.dto.DeveloperDetailDto;
+import com.manbalboy.dmaker.dto.DeveloperDto;
 import com.manbalboy.dmaker.service.DMakerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -22,14 +20,22 @@ public class DMakerController {
 
 
     @GetMapping("/developers")
-    public List<String> getAllDevelopers() {
+    public List<DeveloperDto> getAllDevelopers() {
 
         log.info("GET /developers Http/1.1");
 
-        return Arrays.asList("snow", "Elsa", "Olaf");
+        return dMakerService.getAllDevelopers();
 
     }
 
+    @GetMapping("/developer/{memeberId}")
+    public DeveloperDetailDto getAllDevelopers(@PathVariable String memeberId) {
+
+        log.info("GET /developers Http/1.1");
+
+        return dMakerService.getDeveloperDetail(memeberId);
+
+    }
 
     @PostMapping("/create-developers")
     public CreateDeveloper.Response createDevelopers(@RequestBody CreateDeveloper.Request request) {
