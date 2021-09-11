@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 import static com.manbalboy.dmaker.code.StatusCode.EMPLOYED;
 import static com.manbalboy.dmaker.code.StatusCode.RETIRED;
-import static com.manbalboy.dmaker.exception.DMakerErrorCode.*;
+import static com.manbalboy.dmaker.type.DMakerErrorCode.*;
 
 
 @Slf4j
@@ -117,8 +117,8 @@ public class DMakerService {
             throw new DMakerException(LEVEL_EXPERIENCE_YEARS_NOT_MATCHED);
         }
 
-        if (developerLevel == DeveloperLevel.JUNGNIOR && (experienceYear < 4
-                || experienceYear > 10)) {
+        if (developerLevel == DeveloperLevel.JUNGNIOR &&
+                (experienceYear < 4 || experienceYear > 10)) {
             throw new DMakerException(LEVEL_EXPERIENCE_YEARS_NOT_MATCHED);
         }
 

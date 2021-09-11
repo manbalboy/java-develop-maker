@@ -1,15 +1,14 @@
 package com.manbalboy.dmaker.controller;
 
 
-import com.manbalboy.dmaker.dto.CreateDeveloper;
-import com.manbalboy.dmaker.dto.DeveloperDetailDto;
-import com.manbalboy.dmaker.dto.DeveloperDto;
-import com.manbalboy.dmaker.dto.EditDeveloper;
+import com.manbalboy.dmaker.dto.*;
+import com.manbalboy.dmaker.exception.DMakerException;
 import com.manbalboy.dmaker.service.DMakerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Slf4j
@@ -61,5 +60,19 @@ public class DMakerController {
             @PathVariable String memberId
     ) {
         return dMakerService.deleteDeveloper(memberId);
+    }
+
+
+    @ExceptionHandler(DMakerException.class)
+    public DMakerErrorResponse handlerException(DMakerException e,
+                                                HttpServletRequest request) {
+        log.error("errorCode: {} , url: {}, message: {}", e.getDMakerErrorCode(),
+                request.getRequestURL(),
+                e.getDetailMessage());
+
+        return DMakerErrorResponse.builder()
+                .errorCode(e.getDMakerErrorCode())
+                .errorMessage(e.getDetailMessage())
+                .build();
     }
 }

@@ -1,4 +1,4 @@
-package com.manbalboy.dmaker.exception;
+package com.manbalboy.dmaker.type;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
