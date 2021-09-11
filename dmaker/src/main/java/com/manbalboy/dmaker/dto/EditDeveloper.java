@@ -1,7 +1,7 @@
 package com.manbalboy.dmaker.dto;
 
-import com.manbalboy.dmaker.entity.DeveloperLevel;
-import com.manbalboy.dmaker.entity.DeveloperSkillType;
+import com.manbalboy.dmaker.type.DeveloperLevel;
+import com.manbalboy.dmaker.type.DeveloperSkillType;
 import lombok.*;
 
 import javax.validation.constraints.Max;

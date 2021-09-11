@@ -24,7 +24,7 @@ public class DMakerController {
 
         log.info("GET /developers Http/1.1");
 
-        return dMakerService.getAllDevelopers();
+        return dMakerService.getAllEmployedDevelopers();
 
     }
 
@@ -53,6 +53,13 @@ public class DMakerController {
         log.info("request {}", request);
 
         return dMakerService.editDeveloper(memberId, request);
+    }
 
+
+    @DeleteMapping("/developer/{memberId}")
+    public DeveloperDetailDto deleteDeveloper(
+            @PathVariable String memberId
+    ) {
+        return dMakerService.deleteDeveloper(memberId);
     }
 }
