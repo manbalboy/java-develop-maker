@@ -32,12 +32,10 @@ public class DMakerController {
 
 
     @PostMapping("/create-developers")
-    public List<String> createDevelopers(@RequestBody CreateDeveloper.Request request) {
+    public CreateDeveloper.Response createDevelopers(@RequestBody CreateDeveloper.Request request) {
 
-        log.info("request {}" , request);
+        log.info("request {}", request);
 
-        dMakerService.createDeveloper(request);
-
-        return Arrays.asList("snow", "Elsa", "Olaf");
+        return dMakerService.createDeveloper(request);
     }
 }
