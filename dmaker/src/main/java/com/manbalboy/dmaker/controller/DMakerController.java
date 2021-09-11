@@ -4,6 +4,7 @@ package com.manbalboy.dmaker.controller;
 import com.manbalboy.dmaker.dto.CreateDeveloper;
 import com.manbalboy.dmaker.dto.DeveloperDetailDto;
 import com.manbalboy.dmaker.dto.DeveloperDto;
+import com.manbalboy.dmaker.dto.EditDeveloper;
 import com.manbalboy.dmaker.service.DMakerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,6 @@ import java.util.List;
 public class DMakerController {
 
     private final DMakerService dMakerService;
-
 
     @GetMapping("/developers")
     public List<DeveloperDto> getAllDevelopers() {
@@ -37,11 +37,22 @@ public class DMakerController {
 
     }
 
-    @PostMapping("/create-developers")
+    @PostMapping("/developer")
     public CreateDeveloper.Response createDevelopers(@RequestBody CreateDeveloper.Request request) {
 
         log.info("request {}", request);
 
         return dMakerService.createDeveloper(request);
+    }
+
+    @PutMapping("/developer/{memberId}")
+    public DeveloperDetailDto editDeveloper(
+            @PathVariable String memberId,
+            @RequestBody EditDeveloper.Request request) {
+
+        log.info("request {}", request);
+
+        return dMakerService.editDeveloper(memberId, request);
+
     }
 }

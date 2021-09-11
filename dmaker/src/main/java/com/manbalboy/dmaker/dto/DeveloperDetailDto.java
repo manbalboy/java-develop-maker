@@ -27,6 +27,7 @@ public class DeveloperDetailDto {
                 .memberId(developer.getMemberId())
                 .name(developer.getName())
                 .age(developer.getAge())
+                .id(developer.getId())
                 .build();
     }
 }

@@ -16,11 +16,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@ToString
 public class Developer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected  Long id;
+    protected Long id;
 
     @Enumerated(EnumType.STRING)
     private DeveloperLevel developerLevel;
