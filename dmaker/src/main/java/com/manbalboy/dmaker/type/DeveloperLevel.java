@@ -1,4 +1,4 @@
-package com.manbalboy.dmaker.entity;
+package com.manbalboy.dmaker.type;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,0 +1,27 @@
+POST http://localhost:8080/developer
+Content-Type: application/json
+
+
+{
+  "developerLevel": "JUNIOR",
+  "developerSkillType": "FRONT_END",
+  "experienceYears": 12,
+  "memberId": "manbalboy",
+  "name": "JUNG HUN",
+  "age": 20
+}
+
+###
+PUT http://localhost:8080/developer/manbalboy
+Content-Type: application/json
+
+{
+  "developerLevel": "SENIOR",
+  "developerSkillType": "FRONT_END",
+  "experienceYears": 20
+}
+
+
+###
+GET http://localhost:8080/developers
+Content-Type: application/json

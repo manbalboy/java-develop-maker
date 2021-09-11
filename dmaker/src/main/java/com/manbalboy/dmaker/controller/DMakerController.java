@@ -1,43 +1,65 @@
 package com.manbalboy.dmaker.controller;
 
 
+import com.manbalboy.dmaker.dto.CreateDeveloper;
+import com.manbalboy.dmaker.dto.DeveloperDetailDto;
+import com.manbalboy.dmaker.dto.DeveloperDto;
+import com.manbalboy.dmaker.dto.EditDeveloper;
 import com.manbalboy.dmaker.service.DMakerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/developers")
 @RequiredArgsConstructor
 public class DMakerController {
 
     private final DMakerService dMakerService;
 
-
-    @GetMapping
-    public List<String> getAllDevelopers() {
+    @GetMapping("/developers")
+    public List<DeveloperDto> getAllDevelopers() {
 
         log.info("GET /developers Http/1.1");
 
-        return Arrays.asList("snow", "Elsa", "Olaf");
+        return dMakerService.getAllEmployedDevelopers();
 
     }
 
+    @GetMapping("/developer/{memeberId}")
+    public DeveloperDetailDto getAllDevelopers(@PathVariable String memeberId) {
 
-    @GetMapping("/create-developers")
-    public List<String> createDevelopers() {
+        log.info("GET /developers Http/1.1");
 
-        log.info("GET /create-developers Http/1.1");
+        return dMakerService.getDeveloperDetail(memeberId);
 
-        dMakerService.createDeveloper();
+    }
 
-        return Arrays.asList("snow", "Elsa", "Olaf");
+    @PostMapping("/developer")
+    public CreateDeveloper.Response createDevelopers(@RequestBody CreateDeveloper.Request request) {
 
+        log.info("request {}", request);
+
+        return dMakerService.createDeveloper(request);
+    }
+
+    @PutMapping("/developer/{memberId}")
+    public DeveloperDetailDto editDeveloper(
+            @PathVariable String memberId,
+            @RequestBody EditDeveloper.Request request) {
+
+        log.info("request {}", request);
+
+        return dMakerService.editDeveloper(memberId, request);
+    }
+
+
+    @DeleteMapping("/developer/{memberId}")
+    public DeveloperDetailDto deleteDeveloper(
+            @PathVariable String memberId
+    ) {
+        return dMakerService.deleteDeveloper(memberId);
     }
 }
