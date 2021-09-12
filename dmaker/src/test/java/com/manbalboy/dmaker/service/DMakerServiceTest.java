@@ -1,40 +1,58 @@
 package com.manbalboy.dmaker.service;
 
-import com.manbalboy.dmaker.dto.CreateDeveloper;
-import com.manbalboy.dmaker.dto.DeveloperDto;
-import com.manbalboy.dmaker.type.DeveloperLevel;
-import com.manbalboy.dmaker.type.DeveloperSkillType;
+import com.manbalboy.dmaker.dto.DeveloperDetailDto;
+import com.manbalboy.dmaker.entity.Developer;
+import com.manbalboy.dmaker.repository.DeveloperRepository;
+import com.manbalboy.dmaker.repository.RetiredDeveloperRepository;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
+import java.util.Optional;
+
+import static com.manbalboy.dmaker.code.StatusCode.EMPLOYED;
+import static com.manbalboy.dmaker.type.DeveloperLevel.SENIOR;
+import static com.manbalboy.dmaker.type.DeveloperSkillType.FULl_STACK;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.BDDMockito.anyString;
+import static org.mockito.BDDMockito.given;
 
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class DMakerServiceTest {
 
-    @Autowired
+    @Mock
+    RetiredDeveloperRepository retiredDeveloperRepository;
+    @Mock
+    private DeveloperRepository developerRepository;
+    @InjectMocks
     private DMakerService dMakerService;
 
 
     @Test
     public void testSomething() {
-        dMakerService.createDeveloper(CreateDeveloper.Request
-                .builder()
-                .developerLevel(DeveloperLevel.SENIOR)
-                .developerSkillType(DeveloperSkillType.FULl_STACK)
-                .experienceYears(12)
-                .memberId("manbalboy")
-                .name("name")
-                .age(32)
-                .build()
-        );
-        List<DeveloperDto> allEmployedDevelopers = dMakerService.getAllEmployedDevelopers();
+        given(developerRepository.findByMemberId(anyString()))
+                .willReturn(Optional.of(Developer.builder()
+                        .developerLevel(SENIOR)
+                        .developerSkillType(FULl_STACK)
+                        .age(38)
+                        .experienceYears(12)
+                        .name("HUN")
+                        .memberId("manbalboy")
+                        .statusCode(EMPLOYED)
+                        .build()
+                ));
 
-        System.out.println("============================");
-        System.out.println(allEmployedDevelopers);
-        System.out.println("============================");
+        DeveloperDetailDto developerDetail = dMakerService.getDeveloperDetail("manbalboy");
+
+        assertAll(
+                () -> assertEquals(SENIOR, developerDetail.getDeveloperLevel()),
+                () -> assertEquals(FULl_STACK, developerDetail.getDeveloperSkillType()),
+                () -> assertEquals(38, developerDetail.getAge())
+        );
     }
 
 }
