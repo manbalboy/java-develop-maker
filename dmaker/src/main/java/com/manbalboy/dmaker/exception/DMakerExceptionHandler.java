@@ -1,7 +1,6 @@
 package com.manbalboy.dmaker.exception;
 
 import com.manbalboy.dmaker.dto.DMakerErrorResponse;
-import com.manbalboy.dmaker.type.DMakerErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -9,6 +8,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static com.manbalboy.dmaker.type.DMakerErrorCode.INTERNAL_SERVER_ERROR;
+import static com.manbalboy.dmaker.type.DMakerErrorCode.INVALID_REQEUST;
 
 @Slf4j
 @RestControllerAdvice()
@@ -38,8 +40,8 @@ public class DMakerExceptionHandler {
                 e.getMessage());
 
         return DMakerErrorResponse.builder()
-                .errorCode(DMakerErrorCode.INVALID_REQEUST)
-                .errorMessage(DMakerErrorCode.INVALID_REQEUST.getMessage())
+                .errorCode(INVALID_REQEUST)
+                .errorMessage(INVALID_REQEUST.getMessage())
                 .build();
 
     }
@@ -52,8 +54,8 @@ public class DMakerExceptionHandler {
                 e.getMessage());
 
         return DMakerErrorResponse.builder()
-                .errorCode(DMakerErrorCode.INVALID_REQEUST)
-                .errorMessage(DMakerErrorCode.INVALID_REQEUST.getMessage())
+                .errorCode(INTERNAL_SERVER_ERROR)
+                .errorMessage(INTERNAL_SERVER_ERROR.getMessage())
                 .build();
 
     }
