@@ -19,6 +19,7 @@ import static com.manbalboy.dmaker.type.DeveloperLevel.SENIOR;
 import static com.manbalboy.dmaker.type.DeveloperSkillType.FULl_STACK;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -75,6 +76,17 @@ class DMakerServiceTest {
         given(developerRepository.findByMemberId(anyString()))
                 .willReturn(Optional.empty());
 
+        given(developerRepository.save(any()))
+                .willReturn(Developer.builder()
+                        .developerLevel(SENIOR)
+                        .developerSkillType(FULl_STACK)
+                        .age(38)
+                        .experienceYears(12)
+                        .name("HUN")
+                        .memberId("manbalboy")
+                        .statusCode(EMPLOYED)
+                        .build());
+
         ArgumentCaptor<Developer> captor =
                 ArgumentCaptor.forClass(Developer.class);
 
@@ -93,7 +105,6 @@ class DMakerServiceTest {
 
         assertEquals(SENIOR, saveDeveloper.getDeveloperLevel());
         assertEquals(FULl_STACK, saveDeveloper.getDeveloperSkillType());
-
     }
 
 }

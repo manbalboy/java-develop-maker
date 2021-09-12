@@ -1,5 +1,6 @@
 package com.manbalboy.dmaker.service;
 
+import com.manbalboy.dmaker.constant.DMakerConstant;
 import com.manbalboy.dmaker.dto.CreateDeveloper;
 import com.manbalboy.dmaker.dto.DeveloperDetailDto;
 import com.manbalboy.dmaker.dto.DeveloperDto;
@@ -13,13 +14,16 @@ import com.manbalboy.dmaker.type.DeveloperLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.manbalboy.dmaker.code.StatusCode.EMPLOYED;
 import static com.manbalboy.dmaker.code.StatusCode.RETIRED;
+import static com.manbalboy.dmaker.constant.DMakerConstant.MAX_JUNIOR_EXPERIENCE_YEARS;
+import static com.manbalboy.dmaker.constant.DMakerConstant.MIN_SENIOR_EXPERIENCE_YEARS;
 import static com.manbalboy.dmaker.type.DMakerErrorCode.*;
 
 
@@ -30,6 +34,28 @@ public class DMakerService {
     private final DeveloperRepository developerRepository;
     private final RetiredDeveloperRepository retiredDeveloperRepository;
 
+    @Transactional
+    public DeveloperDetailDto deleteDeveloper(String memberId) {
+        // 1.employed -> retired
+        Developer developer = developerRepository
+                .findByMemberId(memberId)
+                .orElseThrow(() -> new DMakerException(NO_DEVELOPER));
+
+        developer.setStatusCode(RETIRED);
+
+        // 2. save into retiredDeveloper
+
+        RetiredDeveloper retiredDeveloper = RetiredDeveloper.builder()
+                .id(developer.getId())
+                .memberId(developer.getMemberId())
+                .name(developer.getName())
+                .build();
+        retiredDeveloperRepository.save(retiredDeveloper);
+
+        return DeveloperDetailDto.fromEntity(developer);
+
+    }
+
     // ACID
     // Atomic
     // Consistency
@@ -39,8 +65,13 @@ public class DMakerService {
     public CreateDeveloper.Response createDeveloper(CreateDeveloper.Request request) {
         validateCreateDeveloperRequest(request);
 
+        return CreateDeveloper.Response.fromEntity(
+                developerRepository.save(createDeveloperFromRequest(request))
+        );
+    }
 
-        Developer developer = Developer.builder()
+    private Developer createDeveloperFromRequest(CreateDeveloper.Request request) {
+        return Developer.builder()
                 .developerLevel(request.getDeveloperLevel())
                 .developerSkillType(request.getDeveloperSkillType())
                 .experienceYears(request.getExperienceYears())
@@ -49,12 +80,9 @@ public class DMakerService {
                 .statusCode(EMPLOYED)
                 .age(request.getAge())
                 .build();
-
-        developerRepository.save(developer);
-
-        return CreateDeveloper.Response.fromEntity(developer);
     }
 
+    @Transactional(readOnly = true)
     public List<DeveloperDto> getAllEmployedDevelopers() {
 
         return developerRepository.findDevelopersByStatusCodeEquals(EMPLOYED)
@@ -63,6 +91,7 @@ public class DMakerService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public DeveloperDetailDto getDeveloperDetail(String memberId) {
         return developerRepository.findByMemberId(memberId)
                 .map(DeveloperDetailDto::fromEntity)
@@ -90,7 +119,7 @@ public class DMakerService {
     }
 
     private void validateEditDeveloperRequest(
-            EditDeveloper.Request request
+            @NotNull EditDeveloper.Request request
     ) {
         validateDeveloperLevel(
                 request.getDeveloperLevel(),
@@ -98,7 +127,8 @@ public class DMakerService {
         );
     }
 
-    private void validateCreateDeveloperRequest(CreateDeveloper.Request request) {
+    private void validateCreateDeveloperRequest(
+            @NotNull CreateDeveloper.Request request) {
         validateDeveloperLevel(
                 request.getDeveloperLevel()
                 , request.getExperienceYears()
@@ -111,41 +141,21 @@ public class DMakerService {
     }
 
     private void validateDeveloperLevel(
-            DeveloperLevel developerLevel,
-            Integer experienceYear) {
-        if (developerLevel == DeveloperLevel.SENIOR && experienceYear < 10) {
+            @NotNull DeveloperLevel developerLevel,
+            @NotNull Integer experienceYear) {
+        if (developerLevel == DeveloperLevel.SENIOR && experienceYear < MIN_SENIOR_EXPERIENCE_YEARS) {
             throw new DMakerException(LEVEL_EXPERIENCE_YEARS_NOT_MATCHED);
         }
 
         if (developerLevel == DeveloperLevel.JUNGNIOR &&
-                (experienceYear < 4 || experienceYear > 10)) {
+                (experienceYear < MAX_JUNIOR_EXPERIENCE_YEARS || experienceYear > MIN_SENIOR_EXPERIENCE_YEARS)) {
             throw new DMakerException(LEVEL_EXPERIENCE_YEARS_NOT_MATCHED);
         }
 
-        if (developerLevel == DeveloperLevel.JUNGNIOR && experienceYear > 4) {
+        if (developerLevel == DeveloperLevel.JUNGNIOR && experienceYear > MAX_JUNIOR_EXPERIENCE_YEARS) {
             throw new DMakerException(LEVEL_EXPERIENCE_YEARS_NOT_MATCHED);
         }
     }
 
-    @Transactional
-    public DeveloperDetailDto deleteDeveloper(String memberId) {
-        // 1.employed -> retired
-        Developer developer = developerRepository
-                .findByMemberId(memberId)
-                .orElseThrow(() -> new DMakerException(NO_DEVELOPER));
 
-        developer.setStatusCode(RETIRED);
-
-        // 2. save into retiredDeveloper
-
-        RetiredDeveloper retiredDeveloper = RetiredDeveloper.builder()
-                .id(developer.getId())
-                .memberId(developer.getMemberId())
-                .name(developer.getName())
-                .build();
-        retiredDeveloperRepository.save(retiredDeveloper);
-
-        return DeveloperDetailDto.fromEntity(developer);
-
-    }
 }

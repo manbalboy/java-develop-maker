@@ -2,6 +2,7 @@ package com.manbalboy.dmaker.entity;
 
 
 import com.manbalboy.dmaker.code.StatusCode;
+import com.manbalboy.dmaker.dto.CreateDeveloper;
 import com.manbalboy.dmaker.type.DeveloperLevel;
 import com.manbalboy.dmaker.type.DeveloperSkillType;
 import lombok.*;
@@ -11,6 +12,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+
+import static com.manbalboy.dmaker.code.StatusCode.EMPLOYED;
 
 @Getter
 @Setter

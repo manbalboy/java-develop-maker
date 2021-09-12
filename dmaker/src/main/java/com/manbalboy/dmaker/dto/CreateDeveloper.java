@@ -7,6 +7,7 @@ import lombok.*;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class CreateDeveloper {
@@ -53,7 +54,7 @@ public class CreateDeveloper {
         private Integer experienceYears;
         private String memberId;
 
-        public static Response fromEntity(Developer developer) {
+        public static Response fromEntity(@NotNull Developer developer) {
             return Response.builder()
                     .developerLevel(developer.getDeveloperLevel())
                     .developerSkillType(developer.getDeveloperSkillType())
